@@ -1,0 +1,11 @@
+{
+    "geode": "4.2.0",
+    "gd": {
+        "android": "2.2074"
+    },
+    "id": "midev.mibot",
+    "name": "MIBot",
+    "version": "v1.0.0",
+    "developer": "MIDev",
+    "description": "GD Bot - Record, Play, Noclip, Speed hack"
+}
