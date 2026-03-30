@@ -1,0 +1,29 @@
+name: Build MIBot
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Geode SDK
+        uses: geode-sdk/build-geode-mod@main
+        with:
+          sdk: latest
+          
+      - name: Build mod
+        run: |
+          cmake -B build -DGEODE_DISABLE_CLI_CALLS=1
+          cmake --build build --config Release
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: MIBot-Android
+          path: build/*.geode
