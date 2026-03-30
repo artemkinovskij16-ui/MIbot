@@ -16,6 +16,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y cmake ninja-build
 
+      - name: Setup Android NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26b
+
       - name: Clone Geode SDK
         run: |
           git clone https://github.com/geode-sdk/geode.git geode-sdk
@@ -26,8 +32,15 @@ jobs:
         run: echo "GEODE_SDK=${{ github.workspace }}/geode-sdk" >> $GITHUB_ENV
 
       - name: Build
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
-          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
+            -DANDROID_ABI=arm64-v8a \
+            -DANDROID_PLATFORM=android-24 \
+            -DGEODE_TARGET_PLATFORM=Android64
           cmake --build build --config Release
 
       - name: Upload
